@@ -32,23 +32,6 @@ configureSession(app);
 configurePassport(app);
 
 
-// Importing Routes
-
-import user  from "./routes/userRoutes.js"
-
-// User Routes
-
-app.use("/api",user);
-
-
-// Error handling middleware
-
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something went wrong!');
-});
-
-
 // Creating and running server
 
 const PORT = process.env.PORT;
