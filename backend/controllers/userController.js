@@ -1,7 +1,7 @@
 import passport from "passport";
 import User from "../models/userModel.js";
 import { randomBytes } from 'crypto';
-
+import { sendEmail } from "../utils/sendEmail.js";
 
 
 // Register User
