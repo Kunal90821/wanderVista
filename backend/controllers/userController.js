@@ -4,6 +4,17 @@ import { randomBytes } from 'crypto';
 import { sendEmail } from "../utils/sendEmail.js";
 
 
+// Handling user authentication error
+
+const handleAuthenticationError = (res, error) => {
+    res.status(401).json({
+        success: false,
+        message: 'User is not authenticated',
+        error: error.message
+    });
+};
+
+
 // Register User
 
 export const register = async(req,res,next) => {
@@ -162,4 +173,79 @@ export const resetPassword = async (req,res,next) => {
             error: error.message
         });
     };
+};
+
+
+// Get User Details
+
+export const getUserDetail = async (req,res,next) => {
+
+    // Check if the user is authenticated
+
+    try{
+        if(req.isAuthenticated()) {
+            const user = await User.findById(req.user.id);
+
+            return res.status(200).json({
+                success: true,
+                user
+            });
+        } else {
+            handleAuthenticationError(res);
+        }
+    } catch(error) {
+        handleAuthenticationError(res, error);
+    }
+};
+
+
+// Get all users -- ADMIN
+
+export const getAllUsers = async (req,res,next) => {
+    
+    try {
+        if(req.isAuthenticated()) {
+        const user = await User.findById(req.user.id);
+
+            if(user.role === "admin") {
+                const users = await User.find();
+                
+                return res.status(200).json({
+                    success: true,
+                    users
+                });
+            } else {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Unauthorized access'
+                });
+            }
+        } else {
+            handleAuthenticationError(res);
+        }
+    } catch(error) {
+        handleAuthenticationError(res,error);
+    }
+};
+
+
+// Get Single User  -- ADMIN
+
+export const getSingleUser = async (req,res,next) => {
+    
+    try {
+        const { id } = req.params;
+
+        if(req.isAuthenticated() && req.user.role === 'admin') {
+            const user = await User.findById(id);
+            res.status(200).json({
+                success: true,
+                user
+            });
+        } else {
+            handleAuthenticatedUser(res);
+        }
+    } catch(error) {
+        handleAuthenticatedUser(res,error);
+    }
 };
