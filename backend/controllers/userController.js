@@ -199,6 +199,79 @@ export const getUserDetail = async (req,res,next) => {
 };
 
 
+// Update user profile
+
+export const updateProfile = async (req,res,next) => {
+    try {
+        if(req.isAuthenticated()) {
+            const newData = {
+                username: req.body.username,
+                name: req.body.name,
+                email: req.body.email
+            }
+            const user = await User.findByIdAndUpdate(req.user.id, newData, {
+                new: true,
+                runValidators: true,
+            });
+
+            res.status(200).json({
+                success: true,
+                message: 'User Profile Updated'
+            });
+
+        } else {
+            handleAuthenticationError(res);
+        }
+    } catch(error) {
+        handleAuthenticationError(res,error);
+    }
+};
+
+
+// Update User Password
+
+export const updatePassword = async (req, res, next) => {
+    try {
+        if (req.isAuthenticated()) {
+            const { oldPassword, newPassword, confirmPassword } = req.body;
+
+            if(newPassword !== confirmPassword) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Password does not match'
+                });
+            }
+
+            if(oldPassword === newPassword) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'New password should not be same as old password'
+                });
+            }
+
+            // Use passport-local-mongoose's changePassword method
+            req.user.changePassword(oldPassword, newPassword, (err) => {
+                if (err) {
+                    return res.status(401).json({
+                        success: false,
+                        message: 'Invalid Old Password Entered'
+                    });
+                }
+
+                res.status(200).json({
+                    success: true,
+                    message: 'Password updated successfully'
+                });
+            });
+        } else {
+            handleAuthenticationError(res);
+        }
+    } catch (error) {
+        handleAuthenticationError(res, error);
+    }
+};
+
+
 // Get all users -- ADMIN
 
 export const getAllUsers = async (req,res,next) => {
@@ -247,5 +320,67 @@ export const getSingleUser = async (req,res,next) => {
         }
     } catch(error) {
         handleAuthenticatedUser(res,error);
+    }
+};
+
+
+// Delete User --ADMIN
+
+export const deleteUser = async (req,res,next) => {
+    try {
+        if(req.isAuthenticated()) {
+            const user = await User.findById(req.user.id);
+
+            if(user.role === 'admin') {
+                const { id } = req.params;
+
+                const user = await User.findById(id);
+
+                if(!user) return res.status(401).jsone({message: 'User not found'});
+
+                await user.deleteOne();
+
+                return res.status(200).json({
+                    success: true,
+                    message: 'User deleted successfully'
+                });
+            } else {
+                return res.status(401).json({
+                    success: false,
+                    message: 'User is not authorized to perform this function'
+                });
+            }
+        } else {
+            handleAuthenticationError(res);
+        }
+    } catch(error) {
+        handleAuthenticationError(res,error);
+    }
+};
+
+
+// Update user role  --ADMIN
+
+export const updateRole = async(req,res,next) => {
+    try {
+        if(req.isAuthenticated() && req.user.role === 'admin') {
+            
+            const user = await User.findById(req.params.id);
+
+            if(!user) return res.status(401).json({message: 'User not found'});
+
+            user.role = req.body.role;
+            
+            await user.save();
+
+            res.status(200).json({
+                success: true,
+                message: 'User Role Updated'
+            });
+        } else {
+            handleAuthenticationError(res);
+        }
+    } catch(error) {
+        handleAuthenticationError(res,error);
     }
 };

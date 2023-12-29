@@ -1,22 +1,26 @@
 import express from "express";
-import { register, login, logOut, forgotPassword, resetPassword, getUserDetail, getAllUsers, getSingleUser } from "../controllers/userController.js";
+import { register, login, logOut, forgotPassword, resetPassword, getUserDetail, getAllUsers, getSingleUser, updateProfile, updatePassword, deleteUser, updateRole } from "../controllers/userController.js";
 
 const router = express.Router();
 
-router.post("/register", register);
+router.route("/register").post(register);
 
-router.post("/login", login);
+router.route("/login").post(login);
 
-router.get("/logout", logOut);
+router.route("/logout").get(logOut);
 
-router.post("/forgot-password", forgotPassword);
+router.route("/forgot-password").post(forgotPassword);
 
-router.put("/reset-password/:token", resetPassword);
+router.route("/reset-password/:token").put(resetPassword);
 
-router.get("/me", getUserDetail);
+router.route("/me").get(getUserDetail);
 
-router.get("/admin/users",getAllUsers);
+router.route("/me/profile").put(updateProfile);
 
-router.get("/admin/user/:id", getSingleUser);
+router.route("/me/update-password").put(updatePassword);
+
+router.route("/admin/users").get(getAllUsers);
+
+router.route("/admin/user/:id").get(getSingleUser).put(updateRole).delete(deleteUser);
 
 export default router;

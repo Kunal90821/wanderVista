@@ -38,7 +38,8 @@ const userSchema = new mongoose.Schema({
     },
 
     resetPasswordToken: String,
-    resetPasswordExpire: Date
+    resetPasswordExpire: Date,
+
 });
 
 userSchema.plugin(passportLocalMongoose);
