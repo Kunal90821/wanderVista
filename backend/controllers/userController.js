@@ -2,17 +2,7 @@ import passport from "passport";
 import User from "../models/userModel.js";
 import { randomBytes } from 'crypto';
 import { sendEmail } from "../utils/sendEmail.js";
-
-
-// Handling user authentication error
-
-const handleAuthenticationError = (res, error) => {
-    res.status(401).json({
-        success: false,
-        message: 'User is not authenticated',
-        error: error.message
-    });
-};
+import { handleAuthenticationError, handleError } from "../utils/handleErrors.js";
 
 
 // Register User
@@ -122,10 +112,7 @@ export const forgotPassword = async(req,res,next) => {
             message: "Password reset email sent successfully",
         });
     } catch(error) {
-        res.status(500).json({
-            message: "Error during password reset process",
-            error: error.message,
-        });
+        handleError(res,error);
     }
 };
 
@@ -168,10 +155,7 @@ export const resetPassword = async (req,res,next) => {
                 });
         });
     } catch(error) {
-        res.status(500).json({
-            message: 'Error during password reset',
-            error: error.message
-        });
+        handleError(res,error);
     };
 };
 
@@ -194,7 +178,7 @@ export const getUserDetail = async (req,res,next) => {
             handleAuthenticationError(res);
         }
     } catch(error) {
-        handleAuthenticationError(res, error);
+        handleError(res, error);
     }
 };
 
@@ -223,7 +207,7 @@ export const updateProfile = async (req,res,next) => {
             handleAuthenticationError(res);
         }
     } catch(error) {
-        handleAuthenticationError(res,error);
+        handleError(res,error);
     }
 };
 
@@ -267,7 +251,7 @@ export const updatePassword = async (req, res, next) => {
             handleAuthenticationError(res);
         }
     } catch (error) {
-        handleAuthenticationError(res, error);
+        handleError(res, error);
     }
 };
 
@@ -297,7 +281,7 @@ export const getAllUsers = async (req,res,next) => {
             handleAuthenticationError(res);
         }
     } catch(error) {
-        handleAuthenticationError(res,error);
+        handleError(res,error);
     }
 };
 
@@ -319,7 +303,7 @@ export const getSingleUser = async (req,res,next) => {
             handleAuthenticatedUser(res);
         }
     } catch(error) {
-        handleAuthenticatedUser(res,error);
+        handleError(res,error);
     }
 };
 
@@ -354,7 +338,7 @@ export const deleteUser = async (req,res,next) => {
             handleAuthenticationError(res);
         }
     } catch(error) {
-        handleAuthenticationError(res,error);
+        handleError(res,error);
     }
 };
 
@@ -381,6 +365,6 @@ export const updateRole = async(req,res,next) => {
             handleAuthenticationError(res);
         }
     } catch(error) {
-        handleAuthenticationError(res,error);
+        handleError(res,error);
     }
 };

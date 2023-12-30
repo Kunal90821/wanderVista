@@ -35,10 +35,12 @@ configurePassport(app);
 // Importing Routes
 
 import user  from "./routes/userRoutes.js"
+import blogs from "./routes/blogRoutes.js"
 
 // User Routes
 
 app.use("/api",user);
+app.use("/api",blogs);
 
 
 // Error handling middleware
