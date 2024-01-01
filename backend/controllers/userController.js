@@ -3,6 +3,7 @@ import User from "../models/userModel.js";
 import { randomBytes } from 'crypto';
 import { sendEmail } from "../utils/sendEmail.js";
 import { handleAuthenticationError, handleError } from "../utils/handleErrors.js";
+import Blog from "../models/blogModel.js";
 
 
 // Register User
@@ -308,25 +309,29 @@ export const getSingleUser = async (req,res,next) => {
 };
 
 
-// Delete User --ADMIN
+// Delete User & deleting their blogs --ADMIN
 
 export const deleteUser = async (req,res,next) => {
     try {
         if(req.isAuthenticated()) {
-            const user = await User.findById(req.user.id);
+            const authenticatedUser = await User.findById(req.user.id);
 
-            if(user.role === 'admin') {
+            if(authenticatedUser.role === 'admin') {
                 const { id } = req.params;
 
-                const user = await User.findById(id);
+                const userToDelete = await User.findById(id);
 
-                if(!user) return res.status(401).jsone({message: 'User not found'});
+                if(!userToDelete) return res.status(401).json({message: 'User not found'});
 
-                await user.deleteOne();
+                const blogsToDelete = await Blog.find({author: userToDelete._id});
+
+                if(blogsToDelete.length > 0) await Blog.deleteMany({author: userToDelete._id});
+
+                await userToDelete.deleteOne();
 
                 return res.status(200).json({
                     success: true,
-                    message: 'User deleted successfully'
+                    message: 'User and associated blogs deleted successfully'
                 });
             } else {
                 return res.status(401).json({
