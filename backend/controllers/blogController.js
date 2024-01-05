@@ -42,8 +42,10 @@ export const getSingleBlog = async(req,res,next) => {
 export const composeBlog = async(req,res,next) => {
     try {
         if(req.isAuthenticated()) {
-            const user = await User.findById()
+            const user = await User.findById(req.user.id);
+
             req.body.author= req.user.id;
+            req.body.authorName = user.username;
 
             const blog = await Blog.create(req.body);
 
@@ -126,122 +128,7 @@ export const deleteBlog = async (req,res,next) => {
 };
 
 
-// Add Comment
-
-export const addComment = async(req,res,next) => {
-    try {
-        if(req.isAuthenticated()) {
-            const {id} = req.params;
-
-            const blog = await Blog.findById(id);
-
-            if(!blog) return res.status(404).json({message: 'Blog not found'});
-
-            const user = await User.findById(req.user.id);
-
-            const newComment = {
-                user: req.user.id,
-                username: user.username,
-                text: req.body.text
-            };
-
-            blog.comments.push(newComment);
-
-            await blog.save();
-
-            res.status(201).json({
-                success: true,
-                blog
-            });
-        } else {
-            handleAuthenticationError(res);
-        }
-    } catch(error) {
-        handleError(res,error);
-    }
-};
-
-
-//  Update a comment
-
-export const updateComment = async(req,res,next) => {
-    try{
-        if(req.isAuthenticated()) {
-            const blog = await Blog.findById(req.params.id);
-
-            if(!blog) return res.status(404).json({message: "Blog not found"});
-
-            const comment = blog.comments.find(comment => comment._id.toString() === req.body.commentId);
-
-            if(!comment) return res.status(404).json({message: "Comment not found"});
-            
-            if(comment.user.equals(req.user.id)) {
-
-                comment.text = req.body.text;
-                
-                await blog.save();
-
-                return res.status(200).json({
-                    success: true,
-                    blog
-                });
-            } else {
-                handleAuthenticationError(res);
-            }
-        } else {
-            handleAuthenticationError(res);
-        }
-    } catch(error) {
-        handleError(res,error);
-    }
-};
-
-
-// Delete a comment
-
-export const deleteComment = async (req,res,next) => {
-    try {
-        if(req.isAuthenticated()){
-            const blog = await Blog.findById(req.params.id);
-
-            if(!blog) return res.status(404).json({message : "Blog not found"});
-
-            const removed = removeCommentAndReplies(blog.comments, req.body.commentId);
-
-            if(removed) {
-                await blog.save();
-                return res.status(200).json({
-                    success: true,
-                    message: "Comment and associated replies deleted successfully",
-                    blog
-                });
-            } else {
-                return res.status(404).json({message: "Comment not found"});
-            }
-        } else {
-            handleAuthenticationError(res);
-        }
-    } catch(error) {
-        handleError(res,error);
-    }
-};
-
-// Removing comment and its replies
-
-const removeCommentAndReplies = (comments, commentId) => {
-    for(let i=0; i < comments.length;i++) {
-        if(comments[i]._id.toString() === commentId) {
-            comments.splice(i,1);
-            return true;  // comment found and removed
-        }
-        if(comments[i].replies && removeCommentAndReplies(comments[i].replies,commentId)) {
-            return true;  // Comment found and removed in replies
-        }
-    }
-    return false; // comment not found
-};
-
-// Like Blog
+// Like / Unlike Blog
 
 export const likeBlog = async(req,res,next) => {
     try{
@@ -265,11 +152,188 @@ export const likeBlog = async(req,res,next) => {
 
                 res.status(201).json({
                     success: true,
+                    message: 'Liked',
+                    blog
+                });
+            } else {
+                blog.likesCount -=1;
+                blog.likes = blog.likes.filter( like => !like.user.equals(req.user.id));
+
+                await blog.save();
+
+                res.status(201).json({
+                    success: true,
+                    message: 'Like Removed',
                     blog
                 });
             }
         } else {
             handleAuthenticationError(res);
+        }
+    } catch(error) {
+        handleError(res,error);
+    }
+};
+
+
+// Add Comment or Reply
+
+export const addCommentOrReply = async(req,res,next) => {
+    try{
+        if(!req.isAuthenticated) return handleAuthenticationError(res);
+
+        const blog = await Blog.findById(req.params.id);
+
+        if(!blog) return res.status(404).json({message: "Blog not found"});
+
+        const user = await User.findById(req.user.id);
+
+        const {text, commentId} = req.body;
+
+        const newComment = {
+            user: req.user.id,
+            username: user.username,
+            text
+        };
+
+        // Checking if it's a reply
+        if(commentId) {
+            const commentIndex = blog.comments.findIndex(comment => comment._id.toString() === commentId);
+
+            if(commentIndex === -1) return res.status(404).json({message: "Comment not found"});
+
+            blog.comments[commentIndex].replies.push(newComment);
+        } else {
+            // It's a comment
+
+            blog.comments.push(newComment);
+        }
+
+        await blog.save();
+
+        return res.status(201).json({
+            success: true,
+            message: commentId ? "Reply added successfully" : "Comment added successfully",
+            blog
+        });
+    } catch(error) {
+        handleError(res,error);
+    }
+};
+
+
+// Delete Comment or Reply
+
+export const deleteCommentOrReply = async(req,res,next) => {
+    try{
+        if(!req.isAuthenticated) return handleAuthenticationError(res);
+
+        const { id, commentId } = req.params;
+
+        const blog = await Blog.findById(id);
+
+        if(!blog) return res.status(404).json({message: "Blog not found"});
+
+        const { replyId } = req.body;
+
+        // Checking if it's a reply
+        if(replyId) {
+            const parentComment = blog.comments.find(comment => comment._id.equals(commentId));
+
+            if(!parentComment) return res.status(404).json({message: "Parent Comment not found"});
+
+            const reply = parentComment.replies.find(reply => reply._id.toString() === replyId);
+
+            if(!reply) return res.status(404).json({message: "Reply not found"});
+
+            if(!reply.user.equals(req.user.id)) return handleAuthenticationError(res);
+
+            // Filter out the reply
+            parentComment.replies = parentComment.replies.filter(reply => reply._id.toString() !== replyId);
+        } else {
+            // It's a comment
+            if(!blog.comments.user.equals(req.user.id)) return handleAuthenticationError(res);
+
+            blog.comments = blog.comments.filter(comment => !comment._id.equals(commentId));
+        }
+        await blog.save();
+        
+        return res.status(200).json({
+            success: true,
+            message: replyId ? "Reply Deleted Successfully" : "Comment Deleted Successfully",
+            blog
+        });
+    } catch(error) {
+        handleError(res,error);
+    }
+};
+
+
+// Like / Unlike comment or reply
+
+export const likeCommentOrReply = async(req,res,next) => {
+    try{
+        if(!req.isAuthenticated()) return handleAuthenticationError(res);
+
+        const {id, commentId} = req.params;
+        const { replyId } = req.body;
+
+        const user = await User.findById(req.user.id);
+
+        const blog = await Blog.findById(id);
+
+        if(!blog) return res.status(404).json({message: "Blog not found"});
+
+        const parentComment = blog.comments.find((comment) => comment._id.equals(commentId));
+
+        if (!parentComment) return res.status(404).json({ message: "Parent comment not found" });
+
+        // Checking if it's a reply
+        if(replyId) {
+
+            const reply = parentComment.replies.find(reply => reply._id.toString() === replyId);
+
+            if(!reply) return res.status(404).json({message: "Reply not found"});
+
+            const alreadyLiked = reply.likes.some(like => like.user.equals(req.user.id));
+
+            if(!alreadyLiked) {
+                reply.likes.push({
+                    user: req.user.id,
+                    username: user.username
+                });
+            } else {
+                reply.likes = reply.likes.filter(like => !like.user.equals(req.user.id));
+            }
+
+            await blog.save();
+
+            res.status(201).json({
+                success: true,
+                message: alreadyLiked ? "Like Removed from Reply" : "Liked Reply",
+                blog
+            });
+        } else {
+            // It's a comment
+
+            const alreadyLiked = parentComment.likes.some(like => like.user.equals(req.user.id));
+
+            if(!alreadyLiked) {
+                parentComment.likes.push({
+                    user: req.user.id,
+                    username: user.username
+                });
+            } else {
+                parentComment.likes = parentComment.likes.filter(like => !like.user.equals(req.user.id));
+            }
+
+            await blog.save();
+
+            res.status(201).json({
+                success: true,
+                message: alreadyLiked ? "Like Removed from Comment" : "Comment Liked",
+                blog
+            });
         }
     } catch(error) {
         handleError(res,error);

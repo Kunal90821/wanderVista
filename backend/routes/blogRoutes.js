@@ -1,16 +1,14 @@
 import express from "express";
-import { addComment, composeBlog, deleteBlog, deleteComment, getAllBlogs, getSingleBlog, likeBlog, modify, updateComment } from "../controllers/blogController.js";
+import { addCommentOrReply, composeBlog, deleteBlog, deleteCommentOrReply, getAllBlogs, getSingleBlog, likeBlog, likeCommentOrReply, modify } from "../controllers/blogController.js";
 
 const router = express.Router();
 
-router.route("/blogs").get(getAllBlogs);
+router.route("/blogs").get(getAllBlogs).post(composeBlog);
 
-router.route("/blog/:id").get(getSingleBlog).put(modify).delete(deleteBlog);;
+router.route("/blogs/:id").get(getSingleBlog).post(likeBlog).put(modify).delete(deleteBlog);;
 
-router.route('/compose').post(composeBlog);
+router.route("/blogs/:id/comment").post(addCommentOrReply)
 
-router.route("/blog/:id/comment").post(addComment).put(updateComment).delete(deleteComment);
-
-router.route("/blog/:id/like").post(likeBlog);
+router.route("/blogs/:id/comments/:commentId").post(likeCommentOrReply).delete(deleteCommentOrReply);
 
 export default router;
