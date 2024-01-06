@@ -1,17 +1,27 @@
 import Blog from '../models/blogModel.js';
 import User from "../models/userModel.js"
+import ApiFeatures from '../utils/apiFeatures.js';
 import { handleAuthenticationError, handleError } from '../utils/handleErrors.js';
 
 
 // Get all blogs
 
-export const getAllBlogs = async(req,res,next) => {
+export const getAllBlogs = async(req,res) => {
     try {
-        const blogs = await Blog.find();
+
+        const resultPerPage = 10;
+        const blogCount = await Blog.countDocuments();
+
+        const apiFeature = new ApiFeatures(Blog.find(), req.query)
+            .search()
+            .filter()
+            .pagination(resultPerPage);
+        const blogs = await apiFeature.query;
 
         res.status(200).json({
             success: true,
-            blogs
+            blogs,
+            blogCount
         });
     } catch(error) {
         handleError(res,error);
@@ -109,7 +119,9 @@ export const deleteBlog = async (req,res,next) => {
 
             const blogAuthor = blog.author;
 
-            if(blogAuthor.equals(req.user.id)) {
+            const user = await User.findById(req.user.id);
+
+            if(blogAuthor.equals(req.user.id) || user.role === "admin") {
                 await blog.deleteOne();
 
                 res.status(200).json({
@@ -228,6 +240,8 @@ export const deleteCommentOrReply = async(req,res,next) => {
     try{
         if(!req.isAuthenticated) return handleAuthenticationError(res);
 
+        const user = await User.findById(req.user.id);
+
         const { id, commentId } = req.params;
 
         const blog = await Blog.findById(id);
@@ -246,15 +260,24 @@ export const deleteCommentOrReply = async(req,res,next) => {
 
             if(!reply) return res.status(404).json({message: "Reply not found"});
 
-            if(!reply.user.equals(req.user.id)) return handleAuthenticationError(res);
-
-            // Filter out the reply
-            parentComment.replies = parentComment.replies.filter(reply => reply._id.toString() !== replyId);
+            if(reply.user.equals(req.user.id) || user.role === "admin") {
+                
+                // Filter out the reply
+                parentComment.replies = parentComment.replies.filter(
+                    (reply) => reply._id.toString() !== replyId
+                );
+            } else {
+                handleAuthenticationError(res);
+            }
         } else {
             // It's a comment
-            if(!blog.comments.user.equals(req.user.id)) return handleAuthenticationError(res);
-
-            blog.comments = blog.comments.filter(comment => !comment._id.equals(commentId));
+            if(blog.comments.user.equals(req.user.id) || user.role === "admin") {
+                blog.comments = blog.comments.filter(
+                    (comment) => !comment._id.equals(commentId)
+                );
+            } else {
+                handleAuthenticationError(res);
+            }
         }
         await blog.save();
         
@@ -335,6 +358,56 @@ export const likeCommentOrReply = async(req,res,next) => {
                 blog
             });
         }
+    } catch(error) {
+        handleError(res,error);
+    }
+};
+
+
+// Get All Comments of a Blog
+
+export const getAllComments = async(req,res,next) => {
+    try {
+        if(!req.isAuthenticated()) return handleAuthenticationError(res);
+
+        const blog = await Blog.findById(req.params.id);
+
+        if(!blog) return res.status(404).json({message: "Blog not found"});
+
+        const comments = blog.comments;
+
+        res.status(200).json({
+            success: true,
+            comments
+        });
+    } catch(error) {
+        handleError(res,error);
+    }
+};
+
+
+// Get All Replies of a Comment
+
+export const getAllReplies = async(req,res,next) => {
+    try {
+        if(!req.isAuthenticated()) return handleAuthenticationError(res);
+
+        const { id, commentId } = req.params;
+
+        const blog = await Blog.findById(id);
+
+        if(!blog) return res.status(404).json({message: "Blog not found"});
+
+        const comments = blog.comments.id(commentId);
+
+        if(!comments) return res.status(404).json({message: "Comment not found"});
+
+        const replies = comments.replies;
+
+        res.status(200).json({
+            success: true,
+            replies
+        });
     } catch(error) {
         handleError(res,error);
     }
