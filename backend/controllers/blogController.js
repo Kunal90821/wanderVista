@@ -154,7 +154,6 @@ export const likeBlog = async(req,res,next) => {
             const alreadyLiked = blog.likes.some(like => like.user.equals(req.user.id));
 
             if(!alreadyLiked) {
-                blog.likesCount += 1;
                 blog.likes.push({
                     user: req.user.id,
                     username: user.username
@@ -168,7 +167,6 @@ export const likeBlog = async(req,res,next) => {
                     blog
                 });
             } else {
-                blog.likesCount -=1;
                 blog.likes = blog.likes.filter( like => !like.user.equals(req.user.id));
 
                 await blog.save();
@@ -192,7 +190,7 @@ export const likeBlog = async(req,res,next) => {
 
 export const addCommentOrReply = async(req,res,next) => {
     try{
-        if(!req.isAuthenticated) return handleAuthenticationError(res);
+        if(!req.isAuthenticated()) return handleAuthenticationError(res);
 
         const blog = await Blog.findById(req.params.id);
 
