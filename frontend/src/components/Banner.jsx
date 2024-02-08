@@ -1,19 +1,19 @@
 import '../styles/Banner.css';
+import '../styles/Animation.css';
 
 const Banner = () => {
     return (
-    <main className="main bg-black text-white">
+    <main className="main bg-white ml-2 lg:ml-6">
         <section className="section banner banner-section">
             <div className="container banner-column">
-                <img className="banner-image" src="https://i.ibb.co/vB5LTFG/Headphone.png" alt="banner" />
+                <img className="banner-image animate-fade-in-right hover:animate-zomm-in" src="/static/images/banner.png" alt="banner" />
                 <div className="banner-inner">
-                    <h1 className="heading-xl">Experience Media Like Never Before</h1>
-                    <p className="paragraph">
-                    Enjoy award-winning stereo beats with wireless listening freedom and sleek,
-                    streamlined with premium padded and delivering first-rate playback.
+                    <h1 className="heading-xl animate-fade-in-left">Wander. Write. Share. Explore.</h1>
+                    <p className="paragraph animate-fade-up-delay text-gray-700">
+                    Explore with words. Write tales. Share wonders. Wander imaginatively.
                     </p>
-                    <button className="btn btn-darken btn-inline">
-                    Our Products<i className="bx bx-right-arrow-alt"></i>
+                    <button className="btn btn-darken btn-inline animate-fade-up-delay">
+                    Check Out All Blogs<i className="bx bx-right-arrow-alt"></i>
                     </button>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&display=swap");
 :root {
   --color-white-100: hsl(206, 5%, 100%);
   --color-white-200: hsl(206, 5%, 90%);
@@ -47,12 +47,16 @@
 body {
   line-height: 1.5;
   height: -webkit-fill-available;
-  color: var(--color-white-100);
-  background-color: var(--color-black-800);
+  color: var(--color-black-800);
+  background-color: #e9ebef;
+  font-family: "Barlow", sans-serif;
 }
 
 main {
   overflow: hidden;
+  border-radius: 1rem;
+  width:95vw;
+  padding-bottom: 5rem;
 }
 
 button {
@@ -89,6 +93,7 @@ img {
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -1px;
+  color: #2B2D42;
 }
 .heading-lg {
   font-family: inherit;
@@ -174,7 +179,7 @@ img {
 }
 .banner-image {
   display: block;
-  max-width: 18rem;
+  max-width: 28rem;
   height: auto;
   margin-top: 2rem;
   object-fit: cover;
@@ -189,7 +194,8 @@ img {
 }
 @media only screen and (min-width: 64rem) {
   .banner-image {
-    max-width: 25rem;
+    max-width: 35rem;
+    min-width: 20rem;
     height: auto;
     margin-right: 5rem;
   }

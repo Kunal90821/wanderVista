@@ -6,6 +6,7 @@ import Logo from './Logo';
 import { useEffect, useState } from "react";
 import Search from './Search';
 import DropdownProfile from "./DropdownProfile";
+import '../styles/Animation.css'
 
 
 const Navbar = () => {
@@ -48,7 +49,7 @@ const Navbar = () => {
 
     return (
         <header>
-            <nav className={`flex justify-between px-8 z-[1001] items-center py-6 h-16 transition-all duration-500 ${isScrolled && 'fixed w-screen top-0 shadow-md lg:px-16 backdrop-filter backdrop-blur-lg bg-opacity-30'} ${isSideMenuOpen && 'bg-black/50 h-screen backdrop-blur-sm'}`}>
+            <nav className={`flex animate-fade-in-down justify-between px-8 z-[1001] items-center py-6 h-16 transition-all duration-500 ${isScrolled && 'fixed left-[3%] w-[95%] rounded-full top-2 shadow-md lg:px-32 backdrop-filter backdrop-blur-lg bg-opacity-30'} ${isSideMenuOpen && 'bg-black/50 h-screen rounded-none backdrop-blur-sm'}`}>
                 <div className="flex items-center gap-8">
                     <section className="flex items-center gap-4">
                         {/* Menu */}

@@ -1,0 +1,164 @@
+/* Fade In Animations */
+
+@-webkit-keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@-webkit-keyframes fadeInDown {
+    from {
+        opactiy: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opactiy: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity:1;
+        transform: translateY(0);
+    }
+}
+
+@-webkit-keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@-webkit-keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+.animate-fade-up-delay {
+    opacity: 0;
+    transform: translateY(20px);
+    -webkit-animation: fadeInUp 1s ease-out forwards;
+    animation: fadeInUp 1s ease-out forwards;
+    -webkit-animation-delay: 1s;
+    animation-delay: 1s;
+}
+
+.animate-fade-in-up {
+    opacity: 0;
+    transform: translateY(20px);
+    -webkit-animation: fadeInUp 1s ease-out forwards;;
+    animation: fadeInUp 1s ease-out forwards;
+}
+
+.animate-fade-in-down {
+    opacity: 0;
+    transform: translateY(-20px);
+    -webkit-animation: fadeInDown 1s ease-out forwards;
+    animation: fadeInDown 1s ease-out forwards;
+}
+
+.animate-fade-in-left {
+    opacity: 0;
+    transform: translateX(-50px);
+    -webkit-animation: fadeInLeft 1s ease-out forwards;
+    animation: fadeInLeft 1s ease-out forwards;
+    -webkit-animation-delay: 1s;
+    animation-delay: 1s;
+}
+
+.animate-fade-in-right {
+    opacity: 0;
+    transform: translateX(50px);
+    -webkit-animation: fadeInRight 1s ease-out forwards;
+    animation: fadeInRight 1s ease-out forwards;
+    -webkit-animation-delay: 1s;
+    animation-delay: 1s;
+}
+
+
+/* Flip Animation */
+
+@-webkit-keyframes flip {
+    from {
+        transform: rotateX(180deg)
+    }
+
+    to {
+        transform: rotateX(0deg)
+    }
+}
+
+@keyframes flip {
+    from {
+        transform: rotateX(180deg)
+    }
+
+    to {
+        transform: rotateX(0deg)
+    }
+}
+.animate-flip-up {
+    -webkit-animation: flip 1.5s;
+    animation: flip 1.5s;
+}

@@ -1,0 +1,225 @@
+.main {
+    width: 95vw;
+    border-radius: 1rem;
+}
+
+.swiper-container {
+    position: relative;
+    /* Make the container relative for absolute positioning */
+    display: flow-root;
+    box-sizing: content-box;
+    height: 40rem;
+    overflow: hidden;
+    margin-top: 1rem;
+}
+
+.content {
+    background: #ffffff8a;
+    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(15px);
+    width: 30rem;
+    height: 18rem;
+    top: -18rem;
+    left: 5rem;
+    text-transform: capitalize;
+    padding: 1rem;
+    color: #656565;
+}
+
+.heading {
+    color: #2b2d42;
+    font-size: 3rem;
+    font-weight: bolder;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.link {
+    display: inline-block;
+    text-transform: capitalize;
+    margin-top: 1rem;
+}
+
+.link>a:hover {
+    color: #ff215a;
+    position: absolute;
+}
+
+.link--arrowed {
+    display: inline-block;
+    color: #2b2d42;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    text-transform: capitalize;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.link--arrowed:hover {
+    color: #ff215a;
+}
+
+.arrow-icon {
+    position: relative;
+    top: -1.5rem;
+    left: 4rem;
+    transition: transform 0.3s ease;
+    vertical-align: middle;
+}
+
+.link--arrowed:hover .arrow-icon {
+    transform: translate3d(5px, 0, 0);
+}
+
+.arrow-icon--circle {
+    transition: stroke-dashoffset 0.3s ease;
+    stroke-dasharray: 95;
+    stroke-dashoffset: 95;
+}
+
+.link--arrowed:hover .arrow-icon--circle {
+    stroke-dashoffset: 0;
+}
+
+.swiper-pagination-bullet {
+    background-color: transparent;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.swiper-pagination-bullet--svg-animation {
+    width: 90px;
+    height: 20px;
+    margin: 6px -7px;
+    display: inline-block;
+}
+
+.swiper-pagination-bullet--svg-animation svg {
+    transform: rotate(-90deg);
+}
+
+.mySwiper2 .svg__circle-inner {
+    stroke: #2b2d42;
+    fill: transparent;
+    transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet-active .svg__circle {
+    stroke: #ff215a;
+    stroke-dasharray: 75;
+    stroke-dashoffset: 0;
+    -webkit-animation: progress 8s ease-in-out 1 forwards;
+    animation: progress 8s ease-in-out 1 forwards;
+}
+
+.mySwiper2 .swiper-pagination-bullet-active .svg__circle-inner {
+    fill: #2b2d42;
+    stroke: #ff215a;
+}
+
+@-webkit-keyframes progress {
+    0% {
+        stroke-dashoffset: 75;
+        opacity: 1;
+    }
+
+    80% {
+        stroke-dashoffset: 0;
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes progress {
+    0% {
+        stroke-dashoffset: 75;
+        opacity: 1;
+    }
+
+    80% {
+        stroke-dashoffset: 0;
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        stroke-dashoffset: 0;
+    }
+}
+
+.prev-button,
+.next-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10000;
+    color: #2b2d42;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.prev-button {
+    right: 10rem;
+    top:5rem;
+}
+
+.next-button {
+    right: 10rem;
+    top:8rem;
+}
+
+.prev-button svg {
+    transform: rotate(-90deg);
+}
+.next-button svg {
+    transform: rotate(90deg);
+}
+
+.navigation {
+    margin-top: 40px;
+    margin-right: 2px;
+    width: 0;
+}
+
+.navigation .link--arrowed {
+    display: inline-block;
+}
+
+.navigation .link--arrowed .arrow-icon {
+    position: relative;
+    top: 0;
+    transition: transform 0.3s ease;
+    vertical-align: middle;
+}
+
+.navigation .link--arrowed .arrow-icon--circle {
+    transition: stroke-dashoffset 0.3s ease;
+    stroke-dasharray: 95;
+    stroke-dashoffset: 95;
+}
+
+.prev-button .link--arrowed:hover .arrow-icon {
+    transform: translate3d(0, -5px, 0) rotate(-90deg);
+}
+.next-button .link--arrowed:hover .arrow-icon {
+    transform: translate3d(0, 5px, 0) rotate(90deg);
+}
+
+.navigation .link--arrowed:hover .arrow-icon--circle {
+    stroke-dashoffset: 0;
+}
+
+.navigation .link--arrowed:hover g {
+    color: #ff215a;
+}
+
+@media only screen and (max-width: 768px) {
+    .swiper-pagination-bullet--svg-animation {
+        opacity: 0;
+    }
+}

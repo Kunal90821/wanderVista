@@ -1,11 +1,14 @@
 import React from 'react'
 import Banner from './Banner'
+import BlogsSlider from './BlogsSlider'
+
+import '../styles/Animation.css'
 
 const Home = () => {
     return (
         <>
-            <Banner />
-            <div className='h-screen'>Home</div>
+            <Banner className='animate-flip-up' />
+            <BlogsSlider className='animate-flip-up' />
         </>
     )
 }
