@@ -5,12 +5,10 @@
 
 .swiper-container {
     position: relative;
-    /* Make the container relative for absolute positioning */
     display: flow-root;
     box-sizing: content-box;
     height: 40rem;
     overflow: hidden;
-    margin-top: 1rem;
 }
 
 .content {
@@ -89,7 +87,7 @@
 }
 
 .swiper-pagination-bullet--svg-animation {
-    width: 90px;
+    width: 5.5rem;
     height: 20px;
     margin: 6px -7px;
     display: inline-block;
@@ -220,6 +218,9 @@
 
 @media only screen and (max-width: 768px) {
     .swiper-pagination-bullet--svg-animation {
-        opacity: 0;
+        width: 1.3rem;
+    }
+    .swiper-container {
+        height: 22rem;
     }
 }
