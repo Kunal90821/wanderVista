@@ -3,7 +3,7 @@ import '../styles/Animation.css';
 
 const PopularCategory = () => {
     return (
-        <div className="bg-white main text-center lg:ml-6 ml-2 mt-4">
+        <div className="bg-white main text-center lg:ml-6 ml-2 mt-4 shadow-lg">
             <div className='pt-8 pb-6 text-5xl font-bold animate-fade-up-delay'>Popular Category</div>
             <section className="hero-section">
                 <div className="card-grid">

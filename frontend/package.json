@@ -12,9 +12,10 @@
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
+    "@headlessui/react": "^1.7.18",
     "@material-tailwind/react": "^2.1.9",
     "@mui/icons-material": "^5.15.4",
-    "@mui/material": "^5.15.4",
+    "@mui/material": "^5.15.10",
     "hamburger-react": "^2.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -3,7 +3,7 @@ import '../styles/Animation.css';
 
 const Banner = () => {
     return (
-    <main className="main bg-white ml-2 lg:ml-6">
+    <main className="main bg-white ml-2 lg:ml-6 shadow-lg">
         <section className="section banner banner-section">
             <div className="container banner-column">
                 <img className="banner-image animate-fade-in-right hover:animate-zomm-in" src="/static/images/banner.png" alt="banner" />

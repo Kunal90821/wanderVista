@@ -1,10 +1,9 @@
-import React from 'react'
 import Banner from './Banner'
 import BlogsSlider from './BlogsSlider'
-
-import '../styles/Animation.css'
 import PopularCategory from './PopularCategory'
 import Footer from './Footer'
+
+import '../styles/Animation.css'
 
 const Home = () => {
     return (

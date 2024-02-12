@@ -9,7 +9,7 @@ import '../styles/Animation.css';
 const BlogsSlider = () => {
 
         return (
-        <div className='bg-white mt-4 main lg:ml-6 ml-2 animate-flip-up'>
+        <div className='bg-white mt-4 main lg:ml-6 ml-2 animate-flip-up shadow-lg'>
             <div className='lg:text-6xl text-4xl text-center font-bold animate-fade-up-delay relative top-11 z-[10] bg-white w-full pb-8 pt-2'>
                 Recent Blogs
             </div>

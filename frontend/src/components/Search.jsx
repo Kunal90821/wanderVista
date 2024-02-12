@@ -37,7 +37,7 @@ const Search = () => {
     };
 
     return (
-        <div className={`h-30 flex cursor-pointer px-4 py-2 bg-transparent rounded-full items-center ${isOpen ? 'shadow-[#0003] border-2 border-gray-300 dark:border-white dark:shadow-[#bebdbd33]' : '' }`}>
+        <div className={`h-30 flex cursor-pointer px-4 py-2 bg-transparent rounded-full items-center ${isOpen ? 'shadow-[#424242d3] border-2 border-white ' : '' }`}>
             
             <form>
                 <input 
