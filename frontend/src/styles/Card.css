@@ -1,0 +1,46 @@
+.Arrowlink {
+    display: inline-block;
+    text-transform: capitalize;
+}
+
+.Arrowlink>Link:hover {
+    color: #ff215a;
+    position: relative;
+}
+
+.Arrowlink--arrowed {
+    display: inline-block;
+    color: #2b2d42;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    text-transform: capitalize;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.Arrowlink--arrowed:hover {
+    color: #ff215a;
+}
+
+.arrowLink-iconLink {
+    position: relative;
+    top: -1.5rem;
+    left: 4rem;
+    transition: transform 0.3s ease;
+    vertical-align: middle;
+}
+
+.Arrowlink--arrowed:hover .arrowLink-iconLink {
+    transform: translate3d(5px, 0, 0);
+}
+
+.arrowLink-iconLink--circleLink {
+    transition: stroke-dashoffset 0.3s ease;
+    stroke-dasharray: 95;
+    stroke-dashoffset: 95;
+}
+
+.Arrowlink--arrowed:hover .arrowLink-iconLink--circleLink {
+    stroke-dashoffset: 0;
+}

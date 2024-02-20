@@ -1,5 +1,6 @@
 import '../styles/Banner.css';
 import '../styles/Animation.css';
+import { Link } from 'react-router-dom';
 
 const Banner = () => {
     return (
@@ -12,9 +13,9 @@ const Banner = () => {
                     <p className="paragraph animate-fade-up-delay text-gray-700">
                     Explore with words. Write tales. Share wonders. Wander imaginatively.
                     </p>
-                    <button className="btn btn-darken btn-inline animate-fade-up-delay">
+                    <Link className="btn btn-darken btn-inline animate-fade-up-delay" to='/all-blogs'>
                     Check Out All Blogs<i className="bx bx-right-arrow-alt"></i>
-                    </button>
+                    </Link>
                 </div>
             </div>
         </section>
