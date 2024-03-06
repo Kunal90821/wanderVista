@@ -4,35 +4,68 @@ import { randomBytes } from 'crypto';
 import { sendEmail } from "../utils/sendEmail.js";
 import { handleAuthenticationError, handleError } from "../utils/handleErrors.js";
 import Blog from "../models/blogModel.js";
+import cloudinary from 'cloudinary';
 
 
 // Register User
 
 export const register = async(req,res,next) => {
-    const { username, name, email, password } = req.body;
 
-    const newUser = { username, name, email};
+    try {
+        const { username, name, email, password, avatar } = req.body;
 
-    const user = await User.findOne({username});
-
-    if(user) return res.status(400).json({
-        message: 'User already exists. Please try different username'
-    });
-
-    User.register(newUser, password, function(err,user) {
-        if(err) {
-            res.status(500).json({
-                err
-            });
-        } else {
-            passport.authenticate("local")(req,res, ()=> {
-                res.status(201).json({
-                    success: true,
-                    user
-                });
-            });
+        const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+            folder: 'wanderVista/avatars',
+            width: 150,
+            crop: 'scale'
+        },
+        function(error, result) {
+            console.log(result,error);
         }
-    });
+        );
+
+
+        const newUser = { 
+            username, 
+            name, 
+            email, 
+            avatar: {
+                public_id: myCloud.public_id,
+                url: myCloud.secure_url,
+            }
+        };
+
+        const user = await User.findOne({username}) || await User.findOne({email});
+
+        if(user) return res.status(400).json({
+            message: 'User already exists. Please try different username'
+        });
+
+        User.register(newUser, password, function(err,user) {
+            if(err) {
+                if (err.name === "ValidationError") {
+                    const validationErrors = Object.values(err.errors).map(
+                        (error) => error.message
+                    );
+                    return res.status(400).json({ errors: validationErrors });
+                } else {
+                    return res.status(500).json({ error: err.message });
+                }
+            } else {
+                passport.authenticate("local")(req,res, ()=> {
+                    res.status(201).json({
+                        success: true,
+                        user
+                    });
+                });
+            }
+        });
+    } catch(error) {
+      // Handle Cloudinary upload error
+        return res.status(500).json({
+            error: "Error uploading avatar to Cloudinary",
+        });
+    }
 };
 
 

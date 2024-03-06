@@ -1,11 +1,11 @@
-import '../styles/Banner.css';
-import '../styles/Animation.css';
+import './Banner.css';
+import '../../styles/Animation.css';
 import { Link } from 'react-router-dom';
 
 const Banner = () => {
     return (
     <main className="main bg-white ml-2 lg:ml-6 shadow-lg">
-        <section className="section banner banner-section">
+        <section className="section banner banner-section mt-11">
             <div className="container banner-column">
                 <img className="banner-image animate-fade-in-right hover:animate-zomm-in" src="/static/images/banner.png" alt="banner" />
                 <div className="banner-inner">

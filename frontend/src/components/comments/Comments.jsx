@@ -4,7 +4,7 @@ import Avatar from "@mui/material/Avatar";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import AddComment from './AddComment';
-import '../styles/Animation.css';
+import '../../styles/Animation.css';
 
 const Comment = ({ username, content, date, likes }) => {
     const [isLiked, setLiked] = useState(false);

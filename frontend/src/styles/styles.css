@@ -15,7 +15,7 @@
 body {
     line-height: 1.5;
     height: -webkit-fill-available;
-    color: var(--color-black-800);
-    background-color: #e9ebef;
+    background-color: #c9d6ff;
+    background: linear-gradient(to right, #e2e2e2, #c9d6ff);
     font-family: "Barlow", sans-serif;
 }

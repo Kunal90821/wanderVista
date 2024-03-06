@@ -5,15 +5,17 @@ import Avatar from "@mui/material/Avatar";
 import Logo from './Logo';
 import { useEffect, useState } from "react";
 import Search from './Search';
-import DropdownProfile from "./DropdownProfile";
-import '../styles/Animation.css'
+import DropdownProfile from "../user/DropdownProfile";
+import { useSelector } from 'react-redux';
+import '../../styles/Animation.css'
 
 
-const Navbar = () => {
+const Header = () => {
     const [isSideMenuOpen, setMenuOpen] = useState(false);
     const [isScrolled, setScrolled] = useState(false);
-    const [isLoggedIn, setLoggedIn] = useState(true);
     const [isOpenProfile, setOpenProfile] = useState(false);
+
+    const user = useSelector(state => state.authReducer.user);
 
     useEffect(()=> {
         const handleScroll = () => {
@@ -87,17 +89,19 @@ const Navbar = () => {
                         )
                     )}
                     {/* Avatar */}
-                    {!isLoggedIn ? <NavLink to={"/login"}><div className="transition-all duration-300 font-semibold hover:text-teal-500">Hello, <span>Sign In</span></div></NavLink> : 
+                    {user?.user?.avatar ? (
                         <div className={`${isSideMenuOpen && 'hidden'}`} onClick={ () => setOpenProfile(!isOpenProfile)}>
-                            <Avatar alt="Remy Sharp" src="/static/images/logo.png" />
+                            <Avatar alt={user.user.username} src={user.user.avatar.url || ''} />
                             {/* Open Profile Dropdown */}
                             { isOpenProfile && <DropdownProfile isScrolled = { isScrolled }/>}
                         </div>
-                    }
+                        ): ( 
+                        <NavLink to={"/login"}><div className="transition-all duration-300 font-semibold hover:text-teal-500">Hello, <span>Sign In</span></div></NavLink> 
+                    )}
                 </section>
             </nav>
         </header>
     )
 }
 
-export default Navbar;
+export default Header;

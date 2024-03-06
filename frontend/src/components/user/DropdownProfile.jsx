@@ -1,4 +1,4 @@
-import '../styles/Animation.css';
+import '../../styles/Animation.css';
 
 // eslint-disable-next-line react/prop-types
 const DropdownProfile = ({ isScrolled }) => {

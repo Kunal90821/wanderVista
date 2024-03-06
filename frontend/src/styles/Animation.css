@@ -162,3 +162,28 @@
     -webkit-animation: flip 1.5s;
     animation: flip 1.5s;
 }
+
+@-webkit-keyframes flipX {
+    from {
+        transform: rotateY(180deg)
+    }
+
+    to {
+        transform: rotateY(0deg)
+    }
+}
+
+@keyframes flipX {
+    from {
+        transform: rotateY(180deg)
+    }
+
+    to {
+        transform: rotateY(0deg)
+    }
+}
+
+.animate-flip-x {
+    -webkit-animation: flipX 1.5s;
+    animation: flipX 1.5s;
+}

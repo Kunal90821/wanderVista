@@ -1,5 +1,5 @@
-import '../styles/PopularCategory.css';
-import '../styles/Animation.css';
+import './PopularCategory.css';
+import '../../styles/Animation.css';
 
 const PopularCategory = () => {
     return (

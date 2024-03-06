@@ -1,5 +1,6 @@
-import Login from './Login'
-import '../styles/Animation.css'
+import '../../styles/Animation.css'
+import Login from '../auth/Login';
+import { Link } from 'react-router-dom';
 
 const About = () => {
   return (
@@ -58,12 +59,12 @@ const About = () => {
         </h2>
         <p className="font-medium text-lg text-gray-600 px-2 pb-11 animate-fade-up-delay">
           Ready to become part of the WanderVista community?{" "}
-          <a
-            href={<Login />}
+          <Link
+            to={<Login />}
             className="hover:text-teal-500 font-bold transition-all duration-300"
           >
             Sign up
-          </a>{" "}
+          </Link>{" "}
           today and start sharing your stories with the world!
         </p>
       </div>

@@ -1,4 +1,4 @@
-import '../styles/Animation.css'
+import '../../styles/Animation.css'
 
 const Contact = () => {
   return (

@@ -1,5 +1,5 @@
 import React from 'react'
-import Comments from './Comments';
+import Comments from '../comments/Comments';
 
 const BlogPost = () => {
     return (

@@ -3,8 +3,8 @@ import { Autoplay, Navigation, Parallax, Pagination } from 'swiper/modules';
 
 import "swiper/swiper-bundle.css";
 
-import '../styles/BlogsSlider.css';
-import '../styles/Animation.css';
+import './BlogsSlider.css';
+import '../../styles/Animation.css';
 
 const BlogsSlider = () => {
 

@@ -1,6 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Dancing+Script:400,700);
 
-main {
+.main {
     height: 100%;
     margin: 0;
     padding: 2rem;
@@ -10,12 +10,12 @@ main {
     overflow: hidden;
 }
 
-h1 {
+.h1 {
     margin-top: 2rem;
     text-align: center;
 }
 
-h1+p {
+.h1+ .p {
     text-align: center;
 }
 
@@ -107,11 +107,6 @@ h1+p {
     border-radius: 0.3rem 0 0 0.3rem;
 }
 
-.book.faq {
-    right: 0.8rem;
-    bottom: 3.3rem;
-    border-radius: 0.3rem 0 0 0.3rem;
-}
 
 .book.not-found {
     width: 12rem;
