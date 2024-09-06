@@ -1,6 +1,7 @@
 import Blog from '../models/blogModel.js';
 import User from "../models/userModel.js"
 import ApiFeatures from '../utils/apiFeatures.js';
+import cloudinary from 'cloudinary';
 import { handleAuthenticationError, handleError } from '../utils/handleErrors.js';
 
 
@@ -54,10 +55,33 @@ export const composeBlog = async(req,res,next) => {
         if(req.isAuthenticated()) {
             const user = await User.findById(req.user.id);
 
-            req.body.author= req.user.id;
-            req.body.authorName = user.username;
+            const { title, content, category, media } = req.body
 
-            const blog = await Blog.create(req.body);
+            const author= req.user.id;
+            const authorName = user.username;
+
+            const myCloud = await cloudinary.v2.uploader.upload(req.body.media, {
+                folder: 'wanderVista/blogs',
+                width: 1080,
+                crop: 'scale'
+            },
+            function(error, result) {
+                console.log(result,error);
+            }
+            );
+
+            const newBlog = {title,
+                content,
+                category,
+                media: {
+                    public_id: myCloud.public_id,
+                    url: myCloud.secure_url
+                },
+                author,
+                authorName
+            };
+
+            const blog = await Blog.create(newBlog);
 
             res.status(201).json({
                 success: true,

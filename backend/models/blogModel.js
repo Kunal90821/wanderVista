@@ -132,7 +132,7 @@ const blogSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please enter category"],
         minLength: [3, "Category should have more than 3 characters"],
-        maxLength: [12, "Category cannot exceed 12 characters"]
+        maxLength: [12, "Category cannot exceed more than 12 characters"]
     },
     likes: [
         {
