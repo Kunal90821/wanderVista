@@ -15,7 +15,7 @@ const Header = () => {
     const [isScrolled, setScrolled] = useState(false);
     const [isOpenProfile, setOpenProfile] = useState(false);
 
-    const user = useSelector(state => state.authReducer.user);
+    const user = useSelector(state => state.auth.user);
 
     useEffect(()=> {
         const handleScroll = () => {
@@ -89,9 +89,11 @@ const Header = () => {
                         )
                     )}
                     {/* Avatar */}
-                    {user?.user?.avatar ? (
+                    {user?.user? (
                         <div className={`${isSideMenuOpen && 'hidden'}`} onClick={ () => setOpenProfile(!isOpenProfile)}>
-                            <Avatar alt={user.user.username} src={user.user.avatar.url || ''} />
+                            <Avatar alt={user.user.username} src={user.user.avatar?.url || ''} >
+                                {!user.user?.avatar?.url && user.user.username.charAt(0).toUpperCase()}
+                            </Avatar>
                             {/* Open Profile Dropdown */}
                             { isOpenProfile && <DropdownProfile isScrolled = { isScrolled }/>}
                         </div>

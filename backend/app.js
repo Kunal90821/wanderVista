@@ -1,7 +1,7 @@
 import express from "express";
 import { config } from "dotenv";
 import { connectDatabase } from "./config/database.js";
-import { configureSession, configurePassport } from "./config/auth.js";
+import { configurePassport, configureSession } from "./config/auth.js";
 import cloudinary from 'cloudinary';
 import fileUpload from "express-fileupload";
 import cors from 'cors';
@@ -48,10 +48,10 @@ app.use(express.urlencoded({ extended : true, limit : '10mb' }));
 app.use(fileUpload());
 
 
-// Configure Session
+
+//  Configure Session
 
 configureSession(app);
-
 
 // Configure Passport
 

@@ -1,5 +1,4 @@
 import '../../styles/Animation.css'
-import Login from '../auth/Login';
 import { Link } from 'react-router-dom';
 
 const About = () => {
@@ -60,7 +59,7 @@ const About = () => {
         <p className="font-medium text-lg text-gray-600 px-2 pb-11 animate-fade-up-delay">
           Ready to become part of the WanderVista community?{" "}
           <Link
-            to={<Login />}
+            to='/login'
             className="hover:text-teal-500 font-bold transition-all duration-300"
           >
             Sign up

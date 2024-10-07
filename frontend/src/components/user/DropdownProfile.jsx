@@ -1,7 +1,12 @@
+import { useNavigate } from 'react-router-dom';
 import '../../styles/Animation.css';
+import UserAccount from './UserAccount';
 
 // eslint-disable-next-line react/prop-types
 const DropdownProfile = ({ isScrolled }) => {
+
+    const navigate = useNavigate()
+
     const dropdownStyles = {
         position: "absolute",
         top: "4.2rem",
@@ -26,13 +31,17 @@ const DropdownProfile = ({ isScrolled }) => {
         borderTop: "1.5px solid rgb(173, 173, 173)",
     };
 
+    const handleProfileClick = () => navigate('/my-account')
+
+    const handleLogout = () => console.log("Logout clicked")
+
     return (
         <div style={dropdownStyles} className="flex flex-col dropDownProfile z-[10001] shadow-md animate-fade-in-up">
             <ul className="flex flex-col gap-4 cursor-pointer">
-                <li className="transition-all duration-300 ease-in-out font-semibold hover:text-teal-500">Profile</li>
+                <li className="transition-all duration-300 ease-in-out font-semibold hover:text-teal-500" onClick={handleProfileClick}>Profile</li>
                 <li className="transition-all duration-300 ease-in-out font-semibold hover:text-teal-500">Settings</li>
                 <hr/>
-                <li className="transition-all duration-300 ease-in-out font-semibold hover:text-teal-500">Logout</li>
+                <li className="transition-all duration-300 ease-in-out font-semibold hover:text-teal-500" onClick={handleLogout}>Logout</li>
             </ul>
             <div style={arrowStyles}></div>
         </div>

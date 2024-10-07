@@ -13,8 +13,8 @@ const AllBlogs = () => {
     };
 
     return (
-        <div className='flex'>
-            <div className='grid w-1/4 bg-white rounded-xl mt-20 p-4 ml-32 shadow-lg animate-fade-in-left'>
+        <div className='flex items-start'>
+            <div className='w-1/4 bg-white rounded-xl mt-20 p-4 ml-32 shadow-lg animate-fade-in-left'>
                 <div className='inline-flex ml-8'>
                     <h1 className='text-gray-800 text-xl font-semibold'>
                         Filter
@@ -23,11 +23,11 @@ const AllBlogs = () => {
                         !isOpen ? <FilterAltIcon onClick={handleOpen} className='ml-36' /> : <FilterAltOffIcon onClick={handleOpen} className='ml-36' />
                     }
                 </div>
-                <div className={`px-4 mt-6 ${isOpen ? 'block animate-fade-in-down': 'hidden' }`}>
+                <div className={`px-4 mt-6 absoulte ${isOpen ? 'block animate-fade-in-down': 'hidden' }`}>
                     <Filter />
                 </div>
             </div>
-            <div className='ml-[35%] absolute'>
+            <div className='ml-16 flex-grow'>
                 <Card />
             </div>
         </div>

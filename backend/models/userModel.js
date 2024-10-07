@@ -42,6 +42,7 @@ const userSchema = new mongoose.Schema({
 
 });
 
+
 userSchema.plugin(passportLocalMongoose);
 
 export default mongoose.model("User", userSchema);

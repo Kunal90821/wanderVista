@@ -10,6 +10,6 @@ export const handleAuthenticationError = (res) => {
 export const handleError = (res,error) => {
     res.status(500).json({
         success: false,
-        error: error.message
+        error: error.message || 'Internal server error'
     });
 }

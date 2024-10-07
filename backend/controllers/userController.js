@@ -8,63 +8,66 @@ import cloudinary from 'cloudinary';
 
 
 // Register User
-
-export const register = async(req,res,next) => {
-
+export const register = async (req, res, next) => {
     try {
         const { username, name, email, password, avatar } = req.body;
 
-        const myCloud = await cloudinary.v2.uploader.upload(avatar, {
-            folder: 'wanderVista/avatars',
-            width: 150,
-            crop: 'scale'
-        },
-        function(error, result) {
-            console.log(result,error);
-        }
-        );
+        let avatarData;
 
+        // check if avatar is provided
 
-        const newUser = { 
-            username, 
-            name, 
-            email, 
-            avatar: {
+        if(avatar.length > 0) {
+            // Upload avatar to Cloudinary
+            const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+                folder: 'wanderVista/avatars',
+                width: 150,
+                crop: 'scale'
+            });
+
+            avatarData = {
                 public_id: myCloud.public_id,
-                url: myCloud.secure_url,
-            }
-        };
+                url: myCloud.secure_url
+            };
+        } else {
+            // no avatar provided, skip upload
 
-        const user = await User.findOne({username}) || await User.findOne({email});
+            avatarData = null;
+        }
 
-        if(user) return res.status(400).json({
-            message: 'User already exists. Please try different username'
+
+        // Check if user already exists
+        const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+        if (existingUser) {
+            return res.status(400).json({
+                message: 'User already exists. Please try a different username or email'
+            });
+        }
+
+        // Create a new user
+        const user = new User({
+            username,
+            name,
+            email,
+            avatar: avatarData
         });
+        
+        // Register user using passport
 
-        User.register(newUser, password, function(err,user) {
-            if(err) {
-                if (err.name === "ValidationError") {
-                    const validationErrors = Object.values(err.errors).map(
-                        (error) => error.message
-                    );
-                    return res.status(400).json({ errors: validationErrors });
-                } else {
-                    return res.status(500).json({ error: err.message });
-                }
-            } else {
-                passport.authenticate("local")(req,res, ()=> {
-                    res.status(201).json({
-                        success: true,
-                        user
-                    });
+        User.register(user, password, (err, user) => {
+            if (err) return res.status(400).json({ error: err.message });
+
+            passport.authenticate("local")(req,res,() => {
+                // Session is created, user is logged in
+                return res.status(201).json({
+                    success: true,
+                    message: "User registered and logged in successfully",
+                    user
                 });
-            }
+            });
         });
-    } catch(error) {
-      // Handle Cloudinary upload error
-        return res.status(500).json({
-            error: "Error uploading avatar to Cloudinary",
-        });
+
+    } catch (error) {
+        handleError(res, error);
     }
 };
 
@@ -72,27 +75,25 @@ export const register = async(req,res,next) => {
 // Login User
 
 export const login = async(req,res,next) => {
-    const {username, password} = req.body;
 
-    const user = new User({
-        username,
-        password
-    });
+    passport.authenticate("local",(err, user, info) => {
+        if (err) return handleError(res,err);
+        if( !user) return handleAuthenticationError(res);
 
-    req.login(user,(err) => {
-        if(err) {
-            return res.status(500).json({
-                err
-            });
-        } else {
-            passport.authenticate("local")(req,res,()=> {
-                return res.status(201).json({
-                    success: true,
-                    user
-                });
-            });
-        }
-    });
+        // login user
+
+        req.login(user, (err) => {
+            if(err) return handleError(res,err);
+
+            // user is logged in and session is created
+
+            return res.status(200).json({
+                success: true,
+                message: "User logged in successfully",
+                user
+            })
+        });
+    })(req,res,next);
 };
 
 
@@ -100,12 +101,13 @@ export const login = async(req,res,next) => {
 
 export const logOut = async(req,res,next) => {
     req.logout(err => {
-        if(err) {
-            return res.status(500).json({
-                err
-            });
-        }
-        res.status(201).json({
+        if(err) return handleError(res,err);
+
+        // Automatically deletes the session cookie
+
+        res.clearCookie("connect.sid");     // default cookie name
+
+        return res.status(200).json({
             success: true,
             message: 'User logged out successfully'
         });
@@ -201,16 +203,12 @@ export const getUserDetail = async (req,res,next) => {
     // Check if the user is authenticated
 
     try{
-        if(req.isAuthenticated()) {
-            const user = await User.findById(req.user.id);
+        const user = await User.findById(req.user.id);
 
-            return res.status(200).json({
-                success: true,
-                user
-            });
-        } else {
-            handleAuthenticationError(res);
-        }
+        return res.status(200).json({
+            success: true,
+            user
+        });
     } catch(error) {
         handleError(res, error);
     }
@@ -221,25 +219,20 @@ export const getUserDetail = async (req,res,next) => {
 
 export const updateProfile = async (req,res,next) => {
     try {
-        if(req.isAuthenticated()) {
-            const newData = {
-                username: req.body.username,
-                name: req.body.name,
-                email: req.body.email
-            }
-            const user = await User.findByIdAndUpdate(req.user.id, newData, {
-                new: true,
-                runValidators: true,
-            });
-
-            res.status(200).json({
-                success: true,
-                message: 'User Profile Updated'
-            });
-
-        } else {
-            handleAuthenticationError(res);
+        const newData = {
+            username: req.body.username,
+            name: req.body.name,
+            email: req.body.email
         }
+        const user = await User.findByIdAndUpdate(req.user.id, newData, {
+            new: true,
+            runValidators: true,
+        });
+
+        res.status(200).json({
+            success: true,
+            message: 'User Profile Updated'
+        });
     } catch(error) {
         handleError(res,error);
     }
@@ -250,40 +243,36 @@ export const updateProfile = async (req,res,next) => {
 
 export const updatePassword = async (req, res, next) => {
     try {
-        if (req.isAuthenticated()) {
-            const { oldPassword, newPassword, confirmPassword } = req.body;
+        const { oldPassword, newPassword, confirmPassword } = req.body;
 
-            if(newPassword !== confirmPassword) {
-                return res.status(401).json({
-                    success: false,
-                    message: 'Password does not match'
-                });
-            }
-
-            if(oldPassword === newPassword) {
-                return res.status(401).json({
-                    success: false,
-                    message: 'New password should not be same as old password'
-                });
-            }
-
-            // Use passport-local-mongoose's changePassword method
-            req.user.changePassword(oldPassword, newPassword, (err) => {
-                if (err) {
-                    return res.status(401).json({
-                        success: false,
-                        message: 'Invalid Old Password Entered'
-                    });
-                }
-
-                res.status(200).json({
-                    success: true,
-                    message: 'Password updated successfully'
-                });
+        if(newPassword !== confirmPassword) {
+            return res.status(401).json({
+                success: false,
+                message: 'Password does not match'
             });
-        } else {
-            handleAuthenticationError(res);
         }
+
+        if(oldPassword === newPassword) {
+            return res.status(401).json({
+                success: false,
+                message: 'New password should not be same as old password'
+            });
+        }
+
+        // Use passport-local-mongoose's changePassword method
+        req.user.changePassword(oldPassword, newPassword, (err) => {
+            if (err) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid Old Password Entered'
+                });
+            }
+
+            res.status(200).json({
+                success: true,
+                message: 'Password updated successfully'
+            });
+        });
     } catch (error) {
         handleError(res, error);
     }
@@ -295,24 +284,18 @@ export const updatePassword = async (req, res, next) => {
 export const getAllUsers = async (req,res,next) => {
     
     try {
-        if(req.isAuthenticated()) {
-        const user = await User.findById(req.user.id);
-
-            if(user.role === "admin") {
-                const users = await User.find();
-                
-                return res.status(200).json({
-                    success: true,
-                    users
-                });
-            } else {
-                return res.status(401).json({
-                    success: false,
-                    message: 'Unauthorized access'
-                });
-            }
+        if(req.user.role === "admin") {
+            const users = await User.find();
+            
+            return res.status(200).json({
+                success: true,
+                users
+            });
         } else {
-            handleAuthenticationError(res);
+            return res.status(401).json({
+                success: false,
+                message: 'Unauthorized access'
+            });
         }
     } catch(error) {
         handleError(res,error);
@@ -327,14 +310,17 @@ export const getSingleUser = async (req,res,next) => {
     try {
         const { id } = req.params;
 
-        if(req.isAuthenticated() && req.user.role === 'admin') {
+        if(req.user.role === 'admin') {
             const user = await User.findById(id);
             res.status(200).json({
                 success: true,
                 user
             });
         } else {
-            handleAuthenticatedUser(res);
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized access",
+            });
         }
     } catch(error) {
         handleError(res,error);
@@ -346,34 +332,28 @@ export const getSingleUser = async (req,res,next) => {
 
 export const deleteUser = async (req,res,next) => {
     try {
-        if(req.isAuthenticated()) {
-            const authenticatedUser = await User.findById(req.user.id);
+        if(req.user.role === 'admin') {
 
-            if(authenticatedUser.role === 'admin') {
-                const { id } = req.params;
+            const { id } = req.params;
+            const userToDelete = await User.findById(id);
 
-                const userToDelete = await User.findById(id);
+            if(!userToDelete) return res.status(401).json({message: 'User not found'});
 
-                if(!userToDelete) return res.status(401).json({message: 'User not found'});
+            const blogsToDelete = await Blog.find({author: userToDelete._id});
 
-                const blogsToDelete = await Blog.find({author: userToDelete._id});
+            if(blogsToDelete.length > 0) await Blog.deleteMany({author: userToDelete._id});
 
-                if(blogsToDelete.length > 0) await Blog.deleteMany({author: userToDelete._id});
+            await userToDelete.deleteOne();
 
-                await userToDelete.deleteOne();
-
-                return res.status(200).json({
-                    success: true,
-                    message: 'User and associated blogs deleted successfully'
-                });
-            } else {
-                return res.status(401).json({
-                    success: false,
-                    message: 'User is not authorized to perform this function'
-                });
-            }
+            return res.status(200).json({
+                success: true,
+                message: 'User and associated blogs deleted successfully'
+            });
         } else {
-            handleAuthenticationError(res);
+            return res.status(401).json({
+                success: false,
+                message: 'Unauthorized action'
+            });
         }
     } catch(error) {
         handleError(res,error);
@@ -385,7 +365,7 @@ export const deleteUser = async (req,res,next) => {
 
 export const updateRole = async(req,res,next) => {
     try {
-        if(req.isAuthenticated() && req.user.role === 'admin') {
+        if(req.user.role === 'admin') {
             
             const user = await User.findById(req.params.id);
 
@@ -400,7 +380,10 @@ export const updateRole = async(req,res,next) => {
                 message: 'User Role Updated'
             });
         } else {
-            handleAuthenticationError(res);
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized action",
+            });
         }
     } catch(error) {
         handleError(res,error);

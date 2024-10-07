@@ -3,7 +3,7 @@ import { HiEye, HiEyeOff } from "react-icons/hi";
 import { FaGoogle, FaGithub, FaLinkedin } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch }from 'react-redux';
-import { loginUser} from '../../features/auth/AuthSlice';
+import { loginUser} from '../../features/auth/authSlice';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 
@@ -29,6 +29,7 @@ const Login = () => {
       })
       .catch((error) => {
         toast.error("Something went wrong. Please try again later");
+        console.error(error)
       });
   };
 

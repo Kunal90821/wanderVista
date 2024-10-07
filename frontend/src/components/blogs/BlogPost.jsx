@@ -1,25 +1,27 @@
 import React from 'react'
+// import { useParams } from 'react-router-dom';
 import Comments from '../comments/Comments';
 
 const BlogPost = () => {
+    // const { id } = useParams();
     return (
         <div className='w-[95%] ml-4 lg:ml-8 overflow-x-hidden'> 
             <div className="px-4 rounded-lg py-1 bg-white">
                 <main className="mt-10">
                     <div className="mb-4 md:mb-0 w-full mx-auto relative">
-                        <div className="px-4 pr-11 lg:px-0">
+                        <div className="ml-0 md:ml-2 px-0 text-center md:px-4 w-[95%]">
                             <h2 className="text-2xl lg:text-4xl font-bold text-gray-800 leading-tight">
                                 Pellentesque a consectetur velit, ac molestie ipsum. Donec
                                 sodales, massa et auctor.
                             </h2>
-                            <a
-                                href="#"
-                                className="py-2 text-green-700 inline-flex items-center justify-center mb-2"
-                            >
+                            <div className='flex text-wrap justify-between p-1'>
+                                <a
+                                    href="#"
+                                    className="py-2 text-sm md:text-md text-green-700 inline-flex items-center justify-center mb-2"
+                                >
                                 Cryptocurrency
-                            </a>
-                            <div className="lg:w-1/4 right-8 lg:-right-24 absolute -mt-20 max-w-screen-sm">
-                                <div className="p-4 border-t border-b md:border md:rounded">
+                                </a>
+                                <div className="p-1 md:p-4">
                                     <div className="flex py-2">
                                         <img
                                             src="https://randomuser.me/api/portraits/men/97.jpg"
@@ -42,13 +44,13 @@ const BlogPost = () => {
 
                         <img
                             src="https://images.unsplash.com/photo-1587614387466-0a72ca909e16?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2100&q=80"
-                            className="w-[90%] lg:w-[95%] ml-0 lg:ml-2 object-cover rounded-xl"
+                            className="w-[90%] lg:w-[95%] ml-1 lg:ml-2 object-cover rounded-xl"
                             style={{ height: "28em" }}
                         />
                     </div>
 
                     <div className="flex flex-col lg:flex-row lg:space-x-12">
-                        <div className="mt-12 text-gray-700 text-lg pr-4 leading-relaxed w-[95%]">
+                        <div className="mt-12 text-gray-700 text-lg pr-4 text-wrap leading-relaxed w-[95%]">
                             <p className="pb-6">
                             Advantage old had otherwise sincerity dependent additions. It in
                             adapted natural hastily is justice. Six draw you him full not mean

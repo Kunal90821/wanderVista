@@ -2,6 +2,8 @@ import session from "express-session";
 import passport from "passport";
 import User from "../models/userModel.js";
 import { Strategy as LocalStrategy } from "passport-local";
+import { handleAuthenticationError } from "../utils/handleErrors.js";
+
 
 // Session configuration
 
@@ -11,9 +13,10 @@ export const configureSession = (app) => {
         resave: false,
         saveUninitialized: false,
         cookie: {
-            maxAge: 1000 * 24 * 60 *60,
-            sameSite: 'lax'
-        },
+            maxAge: 1000 * 60 * 60 * 24, // 1 day
+            httpOnly: true,     // helps to prevent cross-side scripting (XSS)
+            sameSite: 'lax'     // helps to prevent CSRF attacks
+        }
     }));
 };
 
@@ -27,7 +30,7 @@ export const configurePassport = (app) => {
     // Creating new local strategy
     passport.use(new LocalStrategy(User.authenticate()));
 
-    // Serializing user
+    // Serializing user, no longer used with jwt but kept for compatibility
     passport.serializeUser((user, done) => {
         done(null, user.id);
     });
@@ -35,12 +38,19 @@ export const configurePassport = (app) => {
     // Deserializing user
     passport.deserializeUser((id,done) => {
         User.findById(id)
-            .then(user => {
-                done(null,user);
-            })
-            .catch(err => {
-                done(err,null);
-            });
+            .then(user => done(null,user))
+            .catch(err => done(err,null));
     });
 
+};
+
+
+// Middleware for authentication check
+
+export const isAuthenticated = (req,res,next) => {
+    if(req.isAuthenticated()) {
+        return next();
+    } else {
+        handleAuthenticationError(res);
+    }
 };
