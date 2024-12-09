@@ -113,6 +113,16 @@ const blogSchema = new mongoose.Schema({
         required: [true, "Please enter content"],
         minLength: [50, "Blog should have more than 50 characters"]
     },
+    coverImage: {
+        public_id: {
+            type: String,
+            required: true
+        },
+        url: {
+            type: String,
+            required: true
+        }
+    },
     media: [
         {
             public_id: String,
@@ -129,10 +139,9 @@ const blogSchema = new mongoose.Schema({
         required: true
     },
     category: {
-        type: String,
-        required: [true, "Please enter category"],
-        minLength: [3, "Category should have more than 3 characters"],
-        maxLength: [12, "Category cannot exceed more than 12 characters"]
+        type: mongoose.Schema.ObjectId,
+        ref: "Category",    // Reference to the category model
+        required: [true, "Please select a category"]
     },
     likes: [
         {

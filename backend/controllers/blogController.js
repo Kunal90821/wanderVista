@@ -1,5 +1,6 @@
 import Blog from '../models/blogModel.js';
-import User from "../models/userModel.js"
+import User from "../models/userModel.js";
+import Category from '../models/categoryModel.js'
 import ApiFeatures from '../utils/apiFeatures.js';
 import cloudinary from 'cloudinary';
 import { handleAuthenticationError, handleError } from '../utils/handleErrors.js';
@@ -55,10 +56,18 @@ export const composeBlog = async(req,res,next) => {
         if(req.isAuthenticated()) {
             const user = await User.findById(req.user.id);
 
-            const { title, content, category, media } = req.body
+            const { title, content, categoryName, media } = req.body;
 
             const author= req.user.id;
             const authorName = user.username;
+
+            // Check if category exists or create a new one
+
+            let category = await Category.findOne({name: categoryName});
+
+            if (!category) {
+                category = await Category.create({name: categoryName});
+            }
 
             const myCloud = await cloudinary.v2.uploader.upload(req.body.media, {
                 folder: 'wanderVista/blogs',
@@ -70,9 +79,10 @@ export const composeBlog = async(req,res,next) => {
             }
             );
 
-            const newBlog = {title,
+            const newBlog = {
+                title,
                 content,
-                category,
+                category: category._id,
                 media: {
                     public_id: myCloud.public_id,
                     url: myCloud.secure_url
@@ -111,8 +121,19 @@ export const modify = async(req,res,next) => {
             const blogAuthor = blog.author;
 
             if(blogAuthor.equals(req.user.id)) {
+                
+                const { categoryName, ...updateData} = req.body;
+
+                if (categoryName) {
+                    let category = await Category.findOne({ name: categoryName });
+
+                    if (!category) {
+                        category = await Category.create({ name: categoryName });
+                    }
+                    updateData.category = category._id;
+                }
         
-                const updatedBlog = await Blog.findByIdAndUpdate(blogId, req.body, {
+                const updatedBlog = await Blog.findByIdAndUpdate(blogId, updateData, {
                     new: true,
                     runValidators: true
                 });
@@ -141,11 +162,27 @@ export const deleteBlog = async (req,res,next) => {
 
             if(!blog) return res.status(404).json({message: "Blog not found"});
 
-            const blogAuthor = blog.author;
-
             const user = await User.findById(req.user.id);
 
-            if(blogAuthor.equals(req.user.id) || user.role === "admin") {
+            if(blog.author.equals(req.user.id) || user.role === "admin") {
+                // Remove the blog from its category
+
+                const category = await Category.findById(blog.category);
+
+                if(category) {
+                    category.blogs = category.blogs.filter(
+                        blogId => !blogId.equals(blog._id)
+                    );
+
+                    // If no blogs remain in the category, delete the category
+                    if(category.blogs.length === 0) {
+                        await category.deleteOne();
+                    } else {
+                        await category.save();
+                    }
+                }
+
+                // Delete the blog
                 await blog.deleteOne();
 
                 res.status(200).json({

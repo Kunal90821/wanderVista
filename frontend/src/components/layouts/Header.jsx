@@ -7,7 +7,8 @@ import { useEffect, useState } from "react";
 import Search from './Search';
 import DropdownProfile from "../user/DropdownProfile";
 import { useSelector } from 'react-redux';
-import '../../styles/Animation.css'
+import '../../styles/Animation.css';
+import { deepPurple } from "@mui/material/colors";
 
 
 const Header = () => {
@@ -91,8 +92,8 @@ const Header = () => {
                     {/* Avatar */}
                     {user?.user? (
                         <div className={`${isSideMenuOpen && 'hidden'}`} onClick={ () => setOpenProfile(!isOpenProfile)}>
-                            <Avatar alt={user.user.username} src={user.user.avatar?.url || ''} >
-                                {!user.user?.avatar?.url && user.user.username.charAt(0).toUpperCase()}
+                            <Avatar alt={user.user.name} src={user.user.avatar?.url || ''}  sx={{ bgcolor: deepPurple[500] }}>
+                                {!user.user?.avatar?.url && user.user.name.charAt(0).toUpperCase()}
                             </Avatar>
                             {/* Open Profile Dropdown */}
                             { isOpenProfile && <DropdownProfile isScrolled = { isScrolled }/>}

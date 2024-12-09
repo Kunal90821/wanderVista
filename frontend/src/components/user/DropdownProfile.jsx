@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import '../../styles/Animation.css';
-import UserAccount from './UserAccount';
 
 // eslint-disable-next-line react/prop-types
 const DropdownProfile = ({ isScrolled }) => {
@@ -31,9 +30,9 @@ const DropdownProfile = ({ isScrolled }) => {
         borderTop: "1.5px solid rgb(173, 173, 173)",
     };
 
-    const handleProfileClick = () => navigate('/my-account')
+    const handleProfileClick = () => navigate('/profile')
 
-    const handleLogout = () => console.log("Logout clicked")
+    const handleLogout = () => navigate('/')
 
     return (
         <div style={dropdownStyles} className="flex flex-col dropDownProfile z-[10001] shadow-md animate-fade-in-up">

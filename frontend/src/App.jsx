@@ -10,8 +10,9 @@ import BlogPost from "./components/blogs/BlogPost"
 import AllBlogs from "./components/blogs/AllBlogs";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register"
-import UserAccount from './components/user/UserAccount'
-import BlogForm from "./components/blogs/BlogForm"
+import Profile from './components/user/Profile'
+import EditProfile from './components/user/EditProfile'
+import CreateBlog from "./components/blogs/CreateBlog"
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchUser } from "./features/auth/authSlice.js"
 import Loader from "./components/pages/Loader"
@@ -53,9 +54,10 @@ function App() {
         <Route path="/login" element={user ? <Navigate to ="/" /> : <Login />} />
         <Route path="/register" element={user ? <Navigate to ="/" /> : <Register />} />
         <Route path="/all-blogs" element={<AllBlogs />} />
-        <Route path="/my-account" element={user ? <UserAccount /> : <Navigate to ="/login" />}/>
+        <Route path="/profile" element={user ? <Profile /> : <Navigate to ="/login" />}/>
+        <Route path="/profile/edit" element={user ? <EditProfile /> : <Navigate to ="/login" />}/>
         <Route path="/blog-post" element={user? <BlogPost /> : <Navigate to ="/login" />} />
-        <Route path="/create-blog" element={user ? <BlogForm /> : <Navigate to ="/login" />} />
+        <Route path="/create-blog" element={user ? <CreateBlog /> : <Navigate to ="/login" />} />
       </Routes>
       <Footer />
     </ThemeProvider>
